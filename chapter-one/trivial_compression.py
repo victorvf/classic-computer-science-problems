@@ -22,8 +22,10 @@ class CompressedGene:
     def decompress(self) -> str:
         gene: str = ""
 
-        for i in range(0, self.bit_string.bit_length() - 1, 2):  # - 1 para excluir a sentinela
-            bits: int = self.bit_string >> i & 0b11  # obtém apenas 2 bits relevantes
+        # - 1 para excluir a sentinela
+        for i in range(0, self.bit_string.bit_length() - 1, 2):
+            # obtém apenas 2 bits relevantes
+            bits: int = self.bit_string >> i & 0b11
 
             if bits == 0b00:
                 gene += "A"
@@ -35,18 +37,25 @@ class CompressedGene:
                 gene += "T"
             else:
                 raise ValueError("Invalid bits: {bits}")
-        
+
         return gene[::-1]
-    
+
     def __str__(self) -> str:
         return self.decompress()
 
 
+# flake8: noqa
 if __name__ == "__main__":
     from sys import getsizeof
-    original: str = "TAGGGATTAACCGTTATATATATATAGCCATGGATCGATTATATAGGGATTAACCGTTATATATATATAGCCATGGATCGATTATA" * 100
+
+    original: str = (
+        "TAGGGATTAACCGTTATATATATATAGCCATGGATCGATTATATAGGGATTAACCGTTATATATATATAGCCATGGATCGATTATA"
+        * 100
+    )
     print(f"Original is {getsizeof(original)} bytes")
     compressed: CompressedGene = CompressedGene(original)
     print(f"Compressed is {getsizeof(compressed.bit_string)} bytes")
     print(compressed)
-    print(f"Original and Decompressed are the same: {original == compressed.decompress()}")
+    print(
+        f"Original and Decompressed are the same: {original == compressed.decompress()}"
+    )

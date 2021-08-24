@@ -8,20 +8,22 @@ from typing import (
     Callable,
     Set,
     Deque,
-    Dict,
     Any,
     Optional,
     Protocol,
-)
-from heapq import heappush, heappop
+)  # Dict
+
+# from heapq import heappush, heappop
 
 T = TypeVar("T")
+
 
 def linear_contains(iterable: Iterable[T], key: T) -> bool:
     for item in iterable:
         if item == key:
             return True
     return False
+
 
 C = TypeVar("C", bound="Comparable")
 
@@ -33,13 +35,13 @@ class Comparable(Protocol):
 
     def __lt__(self: C, other: C) -> bool:
         ...
-    
+
     def __gt__(self: C, other: C) -> bool:
         return (not self < other) and self != other
-    
+
     def __le__(self: C, other: C) -> bool:
         return self < other or self == other
-    
+
     def __ge__(self: C, other: C) -> bool:
         return not self < other
 
@@ -61,14 +63,14 @@ def binary_contains(sequence: Sequence[C], key: C) -> bool:
 class Stack(Generic[T]):
     def __init__(self) -> None:
         self._container: List[T] = []
-    
+
     @property
     def empty(self) -> bool:
         return not self._container
-    
+
     def push(self, item: T) -> None:
         self._container.append(item)
-    
+
     def pop(self) -> T:
         return self._container.pop()
 
@@ -82,7 +84,7 @@ class Node(Generic[T]):
         state: T,
         parent: Optional[Node],
         cost: float = 0.0,
-        heuristic: float = 0.0
+        heuristic: float = 0.0,
     ) -> None:
         self.state: T = state
         self.parent: Optional[Node] = parent
@@ -96,7 +98,7 @@ class Node(Generic[T]):
 def dfs(
     initial: T,
     goal_test: Callable[[T], bool],
-    successors: Callable[[T], List[T]]
+    successors: Callable[[T], List[T]],
 ) -> Optional[Node[T]]:
     # frontier corresponde os lugares que ainda não visitamos
     frontier: Stack[Node[T]] = Stack()
@@ -113,15 +115,17 @@ def dfs(
         if goal_test(current_state):
             return current_node
 
-        # verifica para onde podemos ir em seguida e que ainda não tenha sido explorado
+        # verifica para onde podemos ir em seguida e que ainda não tenha sido
+        # explorado
         for child in successors(current_state):
-            if child in explored:  # ignora os filhos que já tenham sido explorados
+            # ignora os filhos que já tenham sido explorados
+            if child in explored:
                 continue
             explored.add(child)
             frontier.push(Node(child, current_node))
 
     return None  # passamos por todos os lugares e não atingimos o objetivo
-        
+
 
 def node_to_path(node: Node[T]) -> List[T]:
     path: List[T] = [node.state]
@@ -130,7 +134,7 @@ def node_to_path(node: Node[T]) -> List[T]:
     while node.parent is not None:
         node = node.parent
         path.append(node.state)
-    
+
     path.reverse()
     return path
 
@@ -141,7 +145,8 @@ class Queue(Generic[T]):
 
     @property
     def empty(self) -> bool:
-        return not self._container  # negação é verdadeira para um container vazio
+        # negação é verdadeira para um container vazio
+        return not self._container
 
     def push(self, item: T) -> None:
         self._container.append(item)
@@ -156,7 +161,7 @@ class Queue(Generic[T]):
 def bfs(
     initial: T,
     goal_test: Callable[[T], bool],
-    successors: Callable[[T], List[T]]
+    successors: Callable[[T], List[T]],
 ) -> Optional[Node[T]]:
     # Frontier corresponde aos lugares que ainda devemos visitar
     frontier: Queue[Node[T]] = Queue()
@@ -182,6 +187,6 @@ def bfs(
 
 
 if __name__ == "__main__":
-    print(linear_contains([1, 5, 15, 15, 15, 20], 5))  # True
-    print(binary_contains(["a", "d", "e", "f", "z"], "f"))  # True
-    print(binary_contains(["john", "mark", "ronald", "sarah"], "sheila"))  # False
+    print(linear_contains([1, 5, 15, 15, 15, 20], 5))
+    print(binary_contains(["a", "d", "e", "f", "z"], "f"))
+    print(binary_contains(["john", "mark", "ronald", "sarah"], "sheila"))
