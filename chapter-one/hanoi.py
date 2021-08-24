@@ -1,5 +1,7 @@
 from typing import TypeVar, Generic, List
+
 T = TypeVar("T")
+
 
 class Stack(Generic[T]):
     def __init__(self) -> None:
@@ -24,7 +26,12 @@ for i in range(1, num_discs + 1):
 
 
 # Buguei nessa recursividade aqui
-def hanoi(begin: Stack[int], end: Stack[int], temp: Stack[int], n: int) -> None:
+def hanoi(
+    begin: Stack[int],
+    end: Stack[int],
+    temp: Stack[int],
+    n: int,
+) -> None:
     if n == 1:
         end.push(begin.pop())
     else:
